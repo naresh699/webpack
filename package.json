@@ -1,0 +1,124 @@
+{
+  "name": "pandora-refapp",
+  "version": "1.0.0",
+  "description": "Configurations and related services for Pandora RefApp",
+  "author": "Pandora",
+  "private": true,
+  "license": "",
+  "homepage": "https://bitbucket.org/PFSweb/dw_pandora_flagship/src/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/PFSweb/dw_pandora_flagship.git"
+  },
+  "engines": {
+    "node": ">=10.15.1",
+    "npm": ">=6.4.1"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "ie >= 11",
+    "safari >= 7"
+  ],
+  "scripts": {
+    "build": "concurrently \"npm run build-watch-app_checkout\" \"npm run build-watch-app_fspandora_richUI\" \"npm run build-watch-app_gift_finder\" --kill-others --raw",
+    "build-dev": "npm run build-dev-app_fspandora_richUI && npm run build-dev-app_checkout && npm run build-dev-app_gift_finder",
+    "build-prod": "npm run build-prod-app_fspandora_richUI && npm run build-prod-app_checkout && npm run build-prod-app_gift_finder",
+    "build-dev-lint": "npm run lint && npm run build-dev",
+    "webpack-dev": "webpack --config ./webpack.config.js --mode development",
+    "webpack-watch": "webpack --config ./webpack.config.js --mode development --watch",
+    "webpack-prod": "webpack --config ./webpack.config.js --mode production",
+    "analyzer-app_fspandora_richUI": "cross-env BUNDLE_ANALYZER=true npm run build-prod-app_fspandora_richUI",
+    "build-dev-app_fspandora_richUI": "npm run webpack-dev -- --env.cartridge=app_fspandora_richUI",
+    "build-watch-app_fspandora_richUI": "npm run webpack-watch -- --env.cartridge=app_fspandora_richUI",
+    "build-prod-app_fspandora_richUI": "npm run webpack-prod -- --env.cartridge=app_fspandora_richUI",
+    "analyzer-app_checkout": "cross-env BUNDLE_ANALYZER=true npm run build-prod-app_checkout",
+    "build-dev-app_checkout": "npm run webpack-dev -- --env.cartridge=app_checkout",
+    "build-watch-app_checkout": "npm run webpack-watch -- --env.cartridge=app_checkout",
+    "build-prod-app_checkout": "npm run webpack-prod -- --env.cartridge=app_checkout",
+    "analyzer-app_gift_finder": "cross-env BUNDLE_ANALYZER=true npm run build-prod-app_gift_finder",
+    "build-dev-app_gift_finder": "npm run webpack-dev -- --env.cartridge=app_gift_finder",
+    "build-watch-app_gift_finder": "npm run webpack-watch -- --env.cartridge=app_gift_finder",
+    "build-prod-app_gift_finder": "npm run webpack-prod -- --env.cartridge=app_gift_finder",
+    "lint": "node_modules/.bin/eslint cartridges/**/*.js",
+    "prettify-all": "prettier-eslint \"cartridges/**/*.js\" --eslint-config-path=./.eslintrc --eslint-path=./node_modules/eslint --write",
+    "patternlib-build": "node ./styleguide/patternlib.js",
+    "patternlib-build-prod": "npm run build-dev && npm run patternlib-build",
+    "patternlib-host": "http-server ./styleguide/pattern-library -cors -o"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-transform-classes": "^7.2.2",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/runtime": "^7.3.1",
+    "autoprefixer": "^9.5.1",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-module-resolver": "^3.1.3",
+    "babel-preset-env": "^1.7.0",
+    "colors": "^1.3.3",
+    "concurrently": "^4.1.0",
+    "copy-webpack-plugin": "^4.6.0",
+    "cross-env": "^5.2.0",
+    "css-loader": "^0.28.11",
+    "eslint": "^5.13.0",
+    "focus-within-polyfill": "^4.1.0",
+    "fs-extra": "^8.1.0",
+    "http-server": "^0.11.1",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.5",
+    "mini-css-extract-plugin": "^0.4.5",
+    "node-sass": "^4.12.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "path": "^0.12.7",
+    "postcss-focus-within": "^3.0.0",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^1.16.4",
+    "prettier-eslint": "^8.8.2",
+    "prettier-eslint-cli": "^4.7.1",
+    "sass-loader": "^7.1.0",
+    "svg-spritemap-webpack-plugin": "^3.3.3",
+    "uglify-es": "^3.3.9",
+    "webpack": "^4.29.3",
+    "webpack-bundle-analyzer": "^3.3.2",
+    "webpack-cli": "^3.2.3",
+    "webpack-entries": "^1.0.0",
+    "webpack-fix-style-only-entries": "^0.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "cartridges/app_checkout/**/*.js": [
+      "prettier-eslint --eslint-config-path=./.eslintrc --eslint-path=./node_modules/eslint --write",
+      "git add",
+      "eslint"
+    ],
+    "cartridges/*/cartridge/scripts/modules/checkout/**/*.js": [
+      "prettier-eslint --eslint-config-path=./.eslintrc --eslint-path=./node_modules/eslint --write",
+      "git add",
+      "eslint"
+    ],
+    "cartridges/*/cartridge/js/modules/plugins/**/*.js": [
+      "prettier-eslint --eslint-config-path=./.eslintrc --eslint-path=./node_modules/eslint --write",
+      "git add",
+      "eslint"
+    ],
+    "*.js": [
+      "eslint --fix",
+      "git add",
+      "eslint"
+    ]
+  },
+  "dependencies": {
+    "imagesloaded": "^3.2.0",
+    "lodash": "^4.17.11",
+    "lodash.debounce": "^4.0.8",
+    "promise-polyfill": "^8.1.0",
+    "svgxuse": "^1.2.6",
+    "waypoints": "^4.0.1"
+  }
+}
